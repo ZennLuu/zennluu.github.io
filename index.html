@@ -59,10 +59,19 @@
             const scene1 = new THREE.Scene();
             const scene2 = new THREE.Scene();
             const scene3 = new THREE.Scene();
+            
+            const sky_tex = new THREE.TextureLoader().load('sky.jpg');
+            
+            scene1.background = sky_tex;
+            scene2.background = sky_tex;
+            scene3.background = sky_tex;
+            
+            var ball;
 
-            const url = 'Volleyball_ball.glb';
+            const url = 'ball.glb';
             gltfLoader.load(url, (gltf) => {
-                scene1.add(gltf.scene);
+                ball = gltf.scene;
+                scene1.add(ball);
             });
 
             const geometry1 = new THREE.BoxGeometry(1, 1, 1);
@@ -82,7 +91,7 @@
             const light1 = new THREE.DirectionalLight(color, intensity);
             const light2 = new THREE.DirectionalLight(color, intensity);
             const light3 = new THREE.DirectionalLight(color, intensity);
-            light1.position.set(-1, 2, 4);
+            light1.position.set(-2, 4, 4);
             light2.position.set(-1, 2, 4);
             light3.position.set(-1, 2, 4);
             scene1.add(light1);
@@ -93,6 +102,8 @@
             function render(time) {
                 time *= 0.001;  // convert time to seconds
     
+                ball.rotation.y = time*2;
+
                 cube1.rotation.x = time;
                 cube1.rotation.y = time;
                 cube2.rotation.x = time*2;
