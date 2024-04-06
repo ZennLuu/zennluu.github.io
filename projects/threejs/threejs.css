@@ -18,10 +18,20 @@ div#cScenes {
     position: absolute;
 }
 
-div#cScenes button {
-    width: 90px;
+div#cScenes a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgrey;
+    width: 100px;
     height: 50px;
-    margin: 0;
-    padding: 0;;
-    margin: 10px 10px 0 10px;
+    text-decoration:none;
+    transition: 0.5S;
+    color: black;
+}
+
+div#cScenes a:hover {
+    background-color: gray;
+    color: white;
+    transition: 0.5S;
 }

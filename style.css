@@ -19,7 +19,6 @@ div#cScenes a {
     width: 220px;
     height: 150px;
     margin: 10px;
-    text-decoration:none;
     transition: 0.5S;
     box-shadow: 0 2px 2px black;
     border-radius: 5px;

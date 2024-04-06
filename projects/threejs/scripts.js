@@ -57,7 +57,7 @@ function main() {
     scene3.background = sky_tex;
     
 
-    const geometry1 = new THREE.SphereGeometry(1);
+    const geometry1 = new THREE.SphereGeometry(0.5);
     const geometry2 = new THREE.BoxGeometry(1, 2, 1);
     const geometry3 = new THREE.BoxGeometry(0.5, 1, .5);
     const material1 = new THREE.MeshPhongMaterial({color: 0x336688});
@@ -67,8 +67,8 @@ function main() {
     const cube2 = new THREE.Mesh(geometry2, material2);
     const cube3 = new THREE.Mesh(geometry3, material3);
     scene1.add(cube1);
-    //scene2.add(cube2);
-    //scene3.add(cube3);
+    scene2.add(cube2);
+    scene3.add(cube3);
     const color = 0xFFFFFF;
     const intensity = 6;
     const light1 = new THREE.DirectionalLight(color, intensity);
