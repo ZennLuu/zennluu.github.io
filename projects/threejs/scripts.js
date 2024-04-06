@@ -6,9 +6,27 @@ const sizes = {
     height: window.innerHeight
 }    
 
-    let SelectScene1 = true;
-    let SelectScene2 = false; 
-    let SelectScene3 = false;
+let b1 = document.getElementById("b1");
+let b2 = document.getElementById("b2");
+let b3 = document.getElementById("b3");
+
+
+let SelectScene1 = false;
+let SelectScene2 = true; 
+let SelectScene3 = false;
+
+let prevDeltaMouseX = 0;
+let prevDeltaMouseY = 0;
+let deltaMouseX = 0;
+let deltaMouseY = 0;
+
+let mouseisDown = false;
+
+let isPause = true;
+
+let moveForward = 0;
+let moveSideward = 0;
+let moveUpward = 0;
 
 function selectScene1(){ 
     SelectScene1 = true;
@@ -31,9 +49,73 @@ function selectScene3(){
     console.log("Scene 3 selectd");
 }
 
-document.getElementById("b1").onclick = function() {selectScene1()};
-document.getElementById("b2").onclick = function() {selectScene2()};
-document.getElementById("b3").onclick = function() {selectScene3()};
+function deltaMouse(event){
+    deltaMouseX = event.movementX;
+    deltaMouseY = event.movementY;
+    //console.log("X: " + deltaMouseX + " Y: " + deltaMouseY);
+}
+
+function mouseDown(){
+    mouseisDown = true;
+}
+
+function mouseUp(){
+    mouseisDown = false;
+}
+
+function keyDown(event){
+    if(event.keyCode == 87){
+        moveForward = 1;
+    } 
+    else if(event.keyCode == 83){
+        moveForward = -1;
+    }
+    else if(event.keyCode == 65){
+        moveSideward = 1;
+    }
+    else if(event.keyCode == 68){
+        moveSideward = -1;
+    }
+    else if(event.keyCode == 32){
+        moveUpward = 1;
+    }
+    else if(event.keyCode == 16){
+        moveUpward = -1;
+    }
+}
+
+function keyUp(event){
+    if(event.keyCode == 87 || event.keyCode == 83){
+        moveForward = 0;
+    }
+    else if(event.keyCode == 65 || event.keyCode == 68){
+        moveSideward = 0;
+    }
+    else if(event.keyCode == 32 || event.keyCode == 16){
+        moveUpward = 0;
+    }
+    else if(event.keyCode == 27){
+        if(isPause === true){
+            isPause = false;
+            b2.textContent = "no Pause";
+            b2.classList.add("cursor");
+        } else {
+            isPause = true;
+            b2.textContent = "Pause";    
+            b2.classList.remove("cursor");
+        }
+    }
+}
+
+b1.onclick = function() {selectScene1()};
+b2.onclick = function() {selectScene2()};
+b3.onclick = function() {selectScene3()};
+
+document.addEventListener("mousemove", deltaMouse);
+document.addEventListener("mousedown", mouseDown);
+document.addEventListener("mouseup", mouseUp);
+document.addEventListener("keydown", keyDown);
+document.addEventListener("keyup", keyUp);
 
 function main() {
     const gltfLoader = new GLTFLoader();
@@ -74,16 +156,39 @@ function main() {
     const light1 = new THREE.DirectionalLight(color, intensity);
     light1.position.set(-2, 4, 4);
     scene1.add(light1);
+    const light2 = new THREE.DirectionalLight(color, intensity);
+    light2.position.set(-2, 4, 4);
+    scene2.add(light2);
+    const light3 = new THREE.DirectionalLight(color, intensity);
+    light3.position.set(-2, 4, 4);
+    scene3.add(light3);
 
 
     function render(time) {
         time *= 0.001;  // convert time to seconds
 
         //ball.rotation.y = time*2;
+       
+        if(mouseisDown == true){
+            cube1.position.x += deltaMouseX * 0.005;
+            cube1.position.y += -deltaMouseY * 0.005;
+        }
 
         cube1.rotation.x = time;
         cube1.rotation.y = time;
 
+        if(isPause === false){
+            camera.rotation.x += -deltaMouseY * 0.001;
+            camera.rotation.y += -deltaMouseX * 0.001;
+    
+            camera.position.z += -moveForward * 0.01;
+            camera.position.x += -moveSideward * 0.01;
+            camera.position.y += moveUpward * 0.01;
+        }
+
+        deltaMouseX = 0;
+        deltaMouseY = 0;
+        
         if(SelectScene1 === true)
         {    
             renderer.render(scene1, camera);
@@ -99,5 +204,6 @@ function main() {
         requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
+    
 }
 main();
