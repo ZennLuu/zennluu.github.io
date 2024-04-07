@@ -1,18 +1,23 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 
-const sizes = {
+let sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }    
+let aspect;
 
 let b1 = document.getElementById("b1");
 let b2 = document.getElementById("b2");
 let b3 = document.getElementById("b3");
 
+let Timer = 0;
+let prevTime = 0;
+let deltaTime = 0;
 
-let SelectScene1 = false;
-let SelectScene2 = true; 
+let SelectScene1 = true;
+let SelectScene2 = false; 
 let SelectScene3 = false;
 
 let prevDeltaMouseX = 0;
@@ -118,22 +123,25 @@ document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
 
 function main() {
-    const gltfLoader = new GLTFLoader();
     const canvas = document.querySelector('#c');
     const renderer = new THREE.WebGLRenderer({alpha: false, antialias: true, canvas});
     renderer.setSize(sizes.width,sizes.height);
     const fov = 75;
-    const aspect = sizes.width / sizes.height;  // the canvas default
+    aspect = sizes.width / sizes.height;  // the canvas default
     const near = 0.1;
     const far = 100;
-    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    let camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    const controls = new OrbitControls(camera, canvas);
     camera.position.z = 2;
+    
     const scene1 = new THREE.Scene();
     const scene2 = new THREE.Scene();
     const scene3 = new THREE.Scene();
     
     const sky_tex = new THREE.TextureLoader().load('sky.jpg');
-    
+    sky_tex.mapping = THREE.EquirectangularReflectionMapping;
+    sky_tex.colorSpace = THREE.SRGBColorSpace;
+
     scene1.background = sky_tex;
     scene2.background = sky_tex;
     scene3.background = sky_tex;
@@ -141,7 +149,7 @@ function main() {
 
     const geometry1 = new THREE.SphereGeometry(0.5);
     const geometry2 = new THREE.BoxGeometry(1, 2, 1);
-    const geometry3 = new THREE.BoxGeometry(0.5, 1, .5);
+    const geometry3 = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const material1 = new THREE.MeshPhongMaterial({color: 0x336688});
     const material2 = new THREE.MeshPhongMaterial({color: 0x44aa88});
     const material3 = new THREE.MeshPhongMaterial({color: 0x44aa00});
@@ -160,27 +168,35 @@ function main() {
     light2.position.set(-2, 4, 4);
     scene2.add(light2);
     const light3 = new THREE.DirectionalLight(color, intensity);
-    light3.position.set(-2, 4, 4);
+    light3.position.set(-3, 4, 4);
     scene3.add(light3);
 
-
     function render(time) {
+        sizes.width = window.innerWidth;
+        sizes.height = window.innerHeight;
+        aspect = sizes.width / sizes.height;
+        renderer.setSize(sizes.width,sizes.height);
+        camera.updateProjectionMatrix();
         time *= 0.001;  // convert time to seconds
 
+        deltaTime = time - prevTime;
+        Timer += deltaTime;
+        b1.textContent = "Timer: " + Math.floor(Timer);
         //ball.rotation.y = time*2;
        
         if(mouseisDown == true){
-            cube1.position.x += deltaMouseX * 0.005;
-            cube1.position.y += -deltaMouseY * 0.005;
+            //cube1.position.x += deltaMouseX * 0.005;
+            //cube1.position.y += -deltaMouseY * 0.005;
         }
 
         cube1.rotation.x = time;
         cube1.rotation.y = time;
 
         if(isPause === false){
-            camera.rotation.x += -deltaMouseY * 0.001;
-            camera.rotation.y += -deltaMouseX * 0.001;
+            //camera.rotation.x += -deltaMouseY * 0.001;
+            //camera.rotation.y += -deltaMouseX * 0.001;
     
+            
             camera.position.z += -moveForward * 0.01;
             camera.position.x += -moveSideward * 0.01;
             camera.position.y += moveUpward * 0.01;
@@ -201,6 +217,9 @@ function main() {
         {    
             renderer.render(scene3, camera);
         }
+
+        prevTime = time;
+
         requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
