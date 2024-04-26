@@ -24,87 +24,11 @@ let moveForward = 0;
 let moveSideward = 0;
 let moveUpward = 0;
 
-// Scene selection flags
-let SelectScene1 = true;
-let SelectScene2 = false;
-let SelectScene3 = false;
-
-// Mouse movement variables
-let deltaMouseX = 0;
-let deltaMouseY = 0;
-
-// Mouse button status
-let mouseisDown = false;
-
 // Pause status
 let isPause = true;
 
-// Event listeners
-document.addEventListener("mousemove", deltaMouse);
-document.addEventListener("mousedown", () => mouseisDown = true);
-document.addEventListener("mouseup", () => mouseisDown = false);
-document.addEventListener("keydown", keyDown);
-document.addEventListener("keyup", keyUp);
-
 // Click event handlers
-b1.onclick = () => selectScene1();
 b2.onclick = () => togglePause();
-b3.onclick = () => selectScene3();
-
-function keyDown(event) {
-    // Handle keydown events for camera movement
-    switch (event.keyCode) {
-        case 87: // W
-            moveForward = 1;
-            break;
-        case 83: // S
-            moveForward = -1;
-            break;
-        case 65: // A
-            moveSideward = 1;
-            break;
-        case 68: // D
-            moveSideward = -1;
-            break;
-        case 32: // Space
-            moveUpward = 1;
-            break;
-        case 16: // Shift
-            moveUpward = -1;
-            break;
-        case 27: // Esc
-            togglePause();
-            break;
-        default:
-            break;
-    }
-}
-
-function keyUp(event) {
-    // Handle keyup events for camera movement
-    switch (event.keyCode) {
-        case 87: // W
-        case 83: // S
-            moveForward = 0;
-            break;
-        case 65: // A
-        case 68: // D
-            moveSideward = 0;
-            break;
-        case 32: // Space
-        case 16: // Shift
-            moveUpward = 0;
-            break;
-        default:
-            break;
-    }
-}
-
-function deltaMouse(event) {
-    // Calculate mouse movement deltas
-    deltaMouseX = event.movementX;
-    deltaMouseY = event.movementY;
-}
 
 function togglePause() {
     // Toggle pause status
@@ -116,22 +40,6 @@ function togglePause() {
         b2.textContent = "no Pause";
         b2.classList.add("cursor");
     }
-}
-
-function selectScene1() {
-    // Select scene 1
-    SelectScene1 = true;
-    SelectScene2 = false;
-    SelectScene3 = false;
-    console.log("Scene 1 selected");
-}
-
-function selectScene3() {
-    // Select scene 3
-    SelectScene1 = false;
-    SelectScene2 = false;
-    SelectScene3 = true;
-    console.log("Scene 3 selected");
 }
 
 function main() {
@@ -166,7 +74,6 @@ function main() {
     const geometry1 = new THREE.SphereGeometry(0.5);
     const material1 = new THREE.MeshPhongMaterial({ map: pysanka_tex });
     const cube1 = new THREE.Mesh(geometry1, material1);
-
 
     let grid = new THREE.GridHelper(20, 40, 0xffffff, 0xffffff);
     grid.material.opacity = 0.2;
@@ -205,9 +112,6 @@ function main() {
             camera.position.x += -moveSideward * 0.01;
             camera.position.y += moveUpward * 0.01;
         }
-
-        deltaMouseX = 0;
-        deltaMouseY = 0;
 
         renderer.render(scene1, camera);
 
