@@ -145,7 +145,6 @@ function main() {
     
     const sky_tex = textureLoader.load('sky.jpg');
     const pysanka_tex = textureLoader.load('pysanka.jpg');
-    pysanka_tex.colorSpace = THREE.SRGBColorSpace;
 
     sky_tex.mapping = THREE.EquirectangularReflectionMapping;
     sky_tex.colorSpace = THREE.SRGBColorSpace;
